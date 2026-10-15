@@ -26,12 +26,8 @@ installation, or internet connection is needed to view the guide and example.
    unless your app provides that capability; see the fallback below.
 3. **Paste this message:**
 
-   > Read AGENTS.md and help me create my CV. First check whether I already
-   > have a master CV or an existing CV in inbox/ (ignore its README.md). If I
-   > have one, ask whether to improve it, update it, or preserve its wording.
-   > Otherwise, offer import or a short interview. Use only facts I
-   > confirm, and build a preview when the draft is ready. Handle the file work
-   > for me and explain how I can save the result as a PDF.
+   > Read AGENTS.md and help me create or update my CV. Guide me through the
+   > next steps.
 
 The assistant creates `cv.md`, asks about your background, and builds
 `output/cv.html`. Open that file, choose **Save as PDF**, and save using your
