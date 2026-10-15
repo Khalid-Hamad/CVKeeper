@@ -1,0 +1,19 @@
+\documentclass[__PAPER__,11pt]{article}
+\usepackage{fontspec}
+\IfFontExistsTF{Lato}{\setmainfont{Lato}}{\setmainfont{TeX Gyre Heros}}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\raggedright
+\titleformat{\section}{\large\scshape}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{12pt}{5pt}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+\titlespacing*{\subsection}{0pt}{8pt}{2pt}
+\setlist[itemize]{leftmargin=1.2em,itemsep=2pt,topsep=3pt,parsep=0pt}
+\begin{document}
+__CONTENT__
+\end{document}

@@ -1,0 +1,29 @@
+name: Check starter
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Test tools
+        run: python -m unittest discover -s tests -v
+      - name: Check fictional example
+        run: python scripts/cv.py check --input examples/cv.md
+      - name: Rebuild fictional example
+        run: python scripts/cv.py build --input examples/cv.md --output output/example --strict
+      - name: Package starter only
+        run: python scripts/package.py

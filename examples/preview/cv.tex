@@ -1,0 +1,51 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{fontspec}
+\IfFontExistsTF{Lato}{\setmainfont{Lato}}{\setmainfont{TeX Gyre Heros}}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\raggedright
+\titleformat{\section}{\large\scshape}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{12pt}{5pt}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+\titlespacing*{\subsection}{0pt}{8pt}{2pt}
+\setlist[itemize]{leftmargin=1.2em,itemsep=2pt,topsep=3pt,parsep=0pt}
+\begin{document}
+{\Huge\bfseries Ahmed Yusef}\par
+Operations Coordinator\par
+Riyadh, Saudi Arabia | \href{mailto:ahmed@example.com}{ahmed@example.com} | \href{https://example.com}{Portfolio}\par
+\section*{Summary}
+Operations coordinator with experience supporting service teams, documenting workflows, and organizing community events. Brings clear written communication and a practical approach to keeping projects on track.\par
+\section*{Experience}
+\subsection*{Operations Coordinator | Example Studio}
+March 2023 - Present | Riyadh, Saudi Arabia\par
+\begin{itemize}
+\item Coordinate weekly scheduling and handovers between client service and delivery teams.
+\item Maintain a shared request tracker so colleagues can see ownership, deadlines, and outstanding actions.
+\item Document onboarding procedures and support new colleagues during their first weeks.
+\end{itemize}
+\subsection*{Administrative Assistant | Sample Community Centre}
+September 2021 - February 2023 | Riyadh, Saudi Arabia\par
+\begin{itemize}
+\item Organized event bookings, prepared attendee information, and coordinated with volunteers.
+\item Introduced a shared checklist for recurring events to make preparation more consistent.
+\end{itemize}
+\section*{Projects}
+\subsection*{Volunteer Welcome Guide}
+Sample Community Centre | 2022\par
+\begin{itemize}
+\item Wrote a practical guide covering event setup, common questions, and escalation contacts.
+\item Collected feedback from volunteers and revised the guide after its first use.
+\end{itemize}
+\section*{Education}
+\subsection*{BA Business Management | Example University}
+2018 - 2021 | Saudi Arabia\par
+\section*{Skills}
+\textbf{Operations:} Scheduling, process documentation, event coordination, stakeholder communication.\par
+\textbf{Tools:} Spreadsheets, shared calendars, presentation software, task tracking.\par
+\textbf{Languages:} Arabic (native), English (professional working proficiency).\par
+\end{document}

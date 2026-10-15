@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Start here · CVKeeper</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #203b31; background: #f4f3ed; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .wrap { width: min(1100px, calc(100% - 48px)); margin: auto; }
+    nav { padding: 27px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d9ded5; }
+    .brand { font-size: 21px; font-weight: 750; letter-spacing: -.8px; }
+    .brand span { color: #708471; font-weight: 400; }
+    .tag { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; padding: 66px 0 54px; }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #637b69; }
+    h1 { font-family: Georgia, serif; font-weight: 400; font-size: clamp(44px, 5vw, 66px); line-height: 1.08; letter-spacing: -2px; margin: 18px 0 23px; }
+    p { font-size: 16px; line-height: 1.7; color: #53685d; }
+    .intro { max-width: 460px; }
+    .button, button { display: inline-block; background: #244d3c; border: 1px solid #244d3c; border-radius: 7px; padding: 12px 18px; color: #fff; font: inherit; font-size: 14px; text-decoration: none; cursor: pointer; }
+    a { color: #254e3b; text-underline-offset: 3px; }
+    a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #b67c28; outline-offset: 4px; }
+    .paper { background: #fff; padding: 35px; border: 1px solid #dce2d9; box-shadow: 8px 12px 0 #e4e9df; transform: rotate(1deg); }
+    .paper .name { font-family: Georgia, serif; font-size: 31px; margin: 0; color: #203b31; }
+    .paper p { font-size: 12px; line-height: 1.65; }
+    .paper h3 { margin-top: 21px; padding-bottom: 7px; border-bottom: 1px solid #bdcabe; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .paper strong { font-size: 12px; }
+    .paper .sample { display: block; margin-top: 24px; color: #778276; font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; border-top: 1px solid #d9ded5; padding: 34px 0; }
+    .number { font-size: 11px; color: #78917d; letter-spacing: 1px; }
+    h2 { font-family: Georgia, serif; font-size: 28px; font-weight: 400; margin: 10px 0; }
+    .steps p { font-size: 14px; margin-bottom: 0; }
+    .prompt { background: #e8eee4; border: 1px solid #d3dfd0; border-radius: 10px; padding: 28px; margin: 0 0 30px; }
+    .prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 17px; }
+    .prompt h2 { margin: 0; }
+    textarea { width: 100%; min-height: 145px; resize: vertical; padding: 17px; border: 1px solid #c6d3c3; border-radius: 5px; background: #fbfcf8; color: #304b3c; font-family: inherit; font-size: 15px; line-height: 1.7; }
+    #copy-status { font-size: 12px; min-height: 20px; margin: 8px 0 0; }
+    details { border-top: 1px solid #d9ded5; padding: 18px 0; }
+    summary { font-size: 15px; font-weight: 600; cursor: pointer; }
+    details p, details li { font-size: 14px; line-height: 1.7; color: #53685d; }
+    code { font-size: .9em; background: #e7ebdf; border-radius: 3px; padding: 2px 5px; overflow-wrap: anywhere; }
+    footer { border-top: 1px solid #d9ded5; padding: 25px 0 35px; margin-top: 18px; font-size: 12px; color: #6f8073; line-height: 1.7; }
+    @media (max-width: 760px) { .hero { grid-template-columns: 1fr; gap: 35px; padding-top: 35px; } .paper { transform: none; } .steps { grid-template-columns: 1fr; gap: 22px; } .tag { max-width: 120px; text-align: right; line-height: 1.6; } .prompt { padding: 20px; } .prompt-head { align-items: flex-start; flex-direction: column; } textarea { min-height: 230px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav aria-label="CVKeeper"><div class="brand">CV<span>Keeper</span></div><span class="tag">A home for your next chapter</span></nav>
+    <main>
+      <section class="hero" aria-labelledby="intro-title">
+        <div>
+          <div class="eyebrow">Your files. Your story.</div>
+          <h1 id="intro-title">A CV that grows<br>with you.</h1>
+          <p class="intro">Create it with your AI assistant. Keep it in this folder. Update it whenever your story changes.</p>
+          <a class="button" href="examples/preview/cv.html">Open the example CV ↗</a>
+          <p style="font-size:12px">Works with folder-capable OpenAI / Codex and Claude Code tools.</p>
+        </div>
+        <div class="paper" aria-label="Fictional CV sample">
+          <p class="name">Ahmed Yusef</p>
+          <p>Operations Coordinator<br>Riyadh, Saudi Arabia · ahmed@example.com</p>
+          <h3>Summary</h3>
+          <p>Operations coordinator supporting service teams, documenting workflows, and organizing community events.</p>
+          <h3>Experience</h3>
+          <strong>Operations Coordinator | Example Studio</strong>
+          <p>Coordinate scheduling and handovers.<br>Keep ownership and deadlines clear.<br>Help new colleagues find their feet.</p>
+          <span class="sample">Fictional example · Your experience goes here</span>
+        </div>
+      </section>
+      <section class="steps" aria-label="Three steps to your CV">
+        <div><span class="number">01 / GET READY</span><h2>Keep this folder.</h2><p>Extract the entire ZIP and put it somewhere easy to find. Already have a CV? Drop a copy into the included <code>inbox/</code> folder. You do not need Git or a GitHub account.</p></div>
+        <div><span class="number">02 / MAKE IT YOURS</span><h2>Open it with AI.</h2><p>Select this folder in your AI app's local project or Code workflow. Give it folder access, then paste the message below. It will ask about your experience.</p></div>
+        <div><span class="number">03 / TAKE IT WITH YOU</span><h2>Save your PDF.</h2><p>Open <code>output/cv.html</code> and choose <strong>Save as PDF</strong>. Use the name shown above your CV, such as <code>Ahmed_Yusef_2026-10-15_1.pdf</code>. Keep <code>cv.md</code> for next time.</p></div>
+      </section>
+      <section class="prompt" aria-labelledby="prompt-title">
+        <div class="prompt-head"><h2 id="prompt-title">Start the conversation.</h2><button type="button" id="copy">Copy starting message</button></div>
+        <textarea id="starting-message" aria-label="Starting message for your AI assistant" readonly>Read AGENTS.md and help me with my CV. First check for cv.md and any existing CV in inbox/ (ignore its README.md). If I have one, ask whether to improve it, update specific details, or preserve its wording. Otherwise offer import or a short interview. Use only confirmed facts and keep my original file unchanged. Handle the file work, build a preview, and show me the exact PDF filename with my first name, last name, update date, and build number.</textarea>
+        <p id="copy-status" role="status" aria-live="polite">Copy this into your AI app after opening this folder there.</p>
+      </section>
+      <details><summary>Which app should I use?</summary><p>Use an OpenAI / Codex app workflow that can open and edit a local folder, or Claude Code in the desktop app. Select the extracted CVKeeper folder, then paste the starting message. If you already use the terminal, start <code>codex</code> or <code>claude</code> from this folder.</p><p>Setup references: <a href="https://learn.chatgpt.com/docs/app">OpenAI app guide</a> · <a href="https://code.claude.com/docs/en/desktop">Claude Code desktop guide</a>. These links open online documentation. Accounts, pricing, and available features depend on your provider.</p></details>
+      <details><summary>Do I need to install anything?</summary><p>This guide and the example open in a browser without installation. Generating your own exports needs Python 3.9 or newer. Ask your assistant to check it for you. If it is missing, install Python from <a href="https://www.python.org/downloads/">python.org</a> and reopen your assistant. There are no Python packages, API keys, or servers to configure. LaTeX is optional.</p></details>
+      <details><summary>I already have a CV. Can I use it?</summary><p>Yes. Drop a copy into the included <code>inbox/</code> folder. Ask your assistant to improve it, make a specific update, or import it with the wording unchanged. It follows <code>AGENTS.md</code>, preserves your original file, and asks only about missing or unclear details. A scanned PDF may need you to paste or confirm its text.</p></details>
+      <details><summary>My chat app cannot open local folders.</summary><p>Attach <code>AGENTS.md</code>, <code>templates/cv.md</code>, and your existing CV to the chat. Ask for the complete updated Markdown, then save it as a plain-text file named <code>cv.md</code> in this folder. Run <code>python3 scripts/cv.py build</code> from the folder (Windows: <code>py -3 scripts/cv.py build</code>). A folder-capable app can do these file steps for you.</p></details>
+      <details><summary>How do I update or tailor it later?</summary><p>Open the same folder in your assistant and describe the change. Ask it to follow <code>AGENTS.md</code>. It should back up your previous CV and rebuild the preview. For a specific job, ask for a tailored copy while keeping your master CV unchanged. Ready-to-use messages are in <code>prompts/</code>.</p></details>
+      <details><summary>What are the PDF settings and filename?</summary><p>Open your generated <code>output/cv.html</code>, choose Save as PDF, use A4 paper and 100% scale, and turn off browser headers and footers. If you need US Letter, ask your assistant to rebuild for Letter first. Save with the exact name displayed above the CV: <code>FirstName_LastName_YYYY-MM-DD_buildNumber.pdf</code>. The page title suggests this name, but confirm it in your browser's save dialog.</p><p>The date is the local build date. Each build increases the number in that output folder and keeps the earlier numbered exports. Tell your assistant your preferred first and family names if either has more than one word. Review all pages, check links, and make sure text can be selected. A saved PDF will not update automatically after future changes.</p></details>
+      <details><summary>Where is my information stored?</summary><p>Your master is <code>cv.md</code>; generated files live in <code>output/</code>. Local scripts make no network requests. Your AI app handles the information you share under its own policies. Keep a private backup of the whole working folder. Git ignores personal working files by default, but that does not encrypt them or protect a folder you share manually.</p></details>
+    </main>
+    <footer>CVKeeper · Built for keeping, revising, and moving forward.<br>Start with this guide. Find detailed instructions in README.md and docs/. The sample is fictional; your assistant should never invent your qualifications.</footer>
+  </div>
+  <script>
+    document.getElementById('copy').addEventListener('click', async () => {
+      const message = document.getElementById('starting-message');
+      const status = document.getElementById('copy-status');
+      try {
+        await navigator.clipboard.writeText(message.value);
+        status.textContent = 'Copied. Paste it into your AI app with this folder open.';
+      } catch {
+        message.focus();
+        message.select();
+        status.textContent = 'Message selected. Press Ctrl+C (Windows) or Command+C (Mac) to copy.';
+      }
+    });
+  </script>
+</body>
+</html>
