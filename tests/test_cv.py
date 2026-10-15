@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -123,10 +124,14 @@ class BuildTests(unittest.TestCase):
     def test_initialize_preserves_existing_cv(self):
         (self.root / "templates").mkdir()
         (self.root / "templates/cv.md").write_text(SAMPLE, encoding="utf-8")
-        self.assertTrue(cv.initialize(self.root))
+        for name in ["profile.md", "field-guide.md", "review.md"]:
+            (self.root / "templates" / name).write_text((ROOT / "templates" / name).read_text(encoding="utf-8"), encoding="utf-8")
+        created = cv.initialize(self.root)
+        self.assertEqual(set(created), {"cv.md", "notes/profile.md", "notes/field-guide.md", "notes/review.md"})
         self.assertTrue((self.root / "inbox").is_dir())
+        self.assertIn("Private career profile", (self.root / "notes/profile.md").read_text(encoding="utf-8"))
         (self.root / "cv.md").write_text("My own CV", encoding="utf-8")
-        self.assertFalse(cv.initialize(self.root))
+        self.assertEqual(cv.initialize(self.root), [])
         self.assertEqual((self.root / "cv.md").read_text(encoding="utf-8"), "My own CV")
 
     def test_cli_errors_without_traceback(self):
@@ -224,7 +229,8 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("Ahmed_Al-Yusef_", result.stdout)
         identity = json.loads((self.output / "build.json").read_text(encoding="utf-8"))
-        self.assertIn(identity["pdf_filename"], result.stdout)
+        self.assertFalse(identity["pdf_created"])
+        self.assertIn("PDF not created", result.stdout)
 
     def test_shipped_cv_uses_ahmed_without_em_dashes(self):
         example = (ROOT / "examples/cv.md").read_text(encoding="utf-8")
@@ -240,6 +246,92 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(html, cv.render_html(blocks, "A4", "en", "ltr", False, filename))
         self.assertEqual((ROOT / "examples/preview/cv.txt").read_text(encoding="utf-8"), cv.render_text(blocks, False))
         self.assertEqual((ROOT / "examples/preview/cv.tex").read_text(encoding="utf-8"), cv.render_tex(blocks, "A4", False))
+
+    def test_pdf_export_creates_real_pdf_and_updates_metadata(self):
+        cv.build(self.source, self.output, strict=True)
+        browser = self.root / "edge.exe"
+        browser.write_text("fake executable", encoding="utf-8")
+
+        def fake_run(command, **kwargs):
+            pdf_argument = next(part for part in command if part.startswith("--print-to-pdf="))
+            Path(pdf_argument.split("=", 1)[1]).write_bytes(b"%PDF-1.7\ncontent\n%%EOF\n")
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        with patch.object(cv.subprocess, "run", side_effect=fake_run):
+            pdf_path = cv.export_latest_pdf(self.output, str(browser))
+        self.assertEqual(pdf_path.read_bytes(), b"%PDF-1.7\ncontent\n%%EOF\n")
+        identity = json.loads((self.output / "build.json").read_text(encoding="utf-8"))
+        self.assertTrue(identity["pdf_created"])
+        self.assertEqual(pdf_path.name, identity["pdf_filename"])
+
+    def test_pdf_export_failure_does_not_install_invalid_file(self):
+        cv.build(self.source, self.output, strict=True)
+        browser = self.root / "chrome.exe"
+        browser.write_text("fake executable", encoding="utf-8")
+
+        def fake_run(command, **kwargs):
+            pdf_argument = next(part for part in command if part.startswith("--print-to-pdf="))
+            Path(pdf_argument.split("=", 1)[1]).write_text("web page", encoding="utf-8")
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        with patch.object(cv.subprocess, "run", side_effect=fake_run), self.assertRaisesRegex(ValueError, "not a valid PDF"):
+            cv.export_latest_pdf(self.output, str(browser))
+        identity = json.loads((self.output / "build.json").read_text(encoding="utf-8"))
+        self.assertFalse(identity["pdf_created"])
+        self.assertFalse((self.output / identity["pdf_filename"]).exists())
+
+    def test_pdf_subcommand_does_not_increment_build_number(self):
+        cv.build(self.source, self.output, strict=True)
+        browser = self.root / "chrome.exe"
+        browser.write_text("fake executable", encoding="utf-8")
+
+        def fake_run(command, **kwargs):
+            pdf_argument = next(part for part in command if part.startswith("--print-to-pdf="))
+            Path(pdf_argument.split("=", 1)[1]).write_bytes(b"%PDF-1.7\n%%EOF\n")
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        with patch.object(cv.subprocess, "run", side_effect=fake_run):
+            result = cv.main(["pdf", "--output", str(self.output), "--browser", str(browser)])
+        self.assertEqual(result, 0)
+        identity = json.loads((self.output / "build.json").read_text(encoding="utf-8"))
+        self.assertEqual(identity["build_number"], 1)
+
+    def test_windows_browser_discovery_includes_edge_and_chrome(self):
+        with patch.object(cv.sys, "platform", "win32"), patch.object(cv.shutil, "which", return_value=None), patch.dict(cv.os.environ, {"PROGRAMFILES": r"C:\Program Files", "PROGRAMFILES(X86)": r"C:\Program Files (x86)", "LOCALAPPDATA": r"C:\Users\Ahmed\AppData\Local"}, clear=True):
+            candidates = {str(path) for path in cv.browser_candidates()}
+        self.assertTrue(any("Microsoft/Edge/Application/msedge.exe" in path for path in candidates))
+        self.assertTrue(any("Google/Chrome/Application/chrome.exe" in path for path in candidates))
+
+    def test_verify_pdf_rejects_webpage_saved_with_pdf_extension(self):
+        fake_pdf = self.root / "cv.pdf"
+        fake_pdf.write_text("<!doctype html><title>CV</title>", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "not a valid PDF"):
+            cv.verify_pdf(fake_pdf)
+
+    def test_career_context_templates_cover_experience_and_timeline(self):
+        profile = (ROOT / "templates/profile.md").read_text(encoding="utf-8")
+        interview = (ROOT / "guides/INTERVIEW.md").read_text(encoding="utf-8")
+        review = (ROOT / "guides/REVIEW.md").read_text(encoding="utf-8")
+        self.assertIn("Role evidence", profile)
+        self.assertIn("Career timeline", profile)
+        self.assertIn("What did you own", interview)
+        self.assertIn("overlap", interview.lower())
+        self.assertIn("actual PDF", review)
+
+    def test_visible_starting_prompt_stays_short_and_delegates_details(self):
+        page = (ROOT / "START-HERE.html").read_text(encoding="utf-8")
+        prompt = page.split('<textarea id="starting-message"', 1)[1].split(">", 1)[1].split("</textarea>", 1)[0]
+        self.assertLess(len(prompt), 150)
+        self.assertIn("CV writer and updater", prompt)
+        self.assertNotIn("first name", prompt.lower())
+        self.assertNotIn("build number", prompt.lower())
+
+    def test_agent_rules_prioritize_experience_and_overlap_review(self):
+        rules = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("Names and contact details come later", rules)
+        self.assertIn("what they owned", rules)
+        self.assertIn("overlaps reflect consulting", rules)
+        self.assertIn("Deliver an actual PDF", rules)
 
 
 if __name__ == "__main__":

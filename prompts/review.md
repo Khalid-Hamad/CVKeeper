@@ -1,6 +1,8 @@
 # Review before I send
 
-Read AGENTS.md and review the CV source I identify (default: cv.md). Check
+Read AGENTS.md and guides/REVIEW.md, then review the CV source I identify
+(default: cv.md). Check whether the interview covered responsibilities,
+achievements, evidence, and timeline overlaps, then check
 clarity, repetition, date consistency, placeholders, spelling, contact details,
 and alignment with my stated target. Distinguish a writing suggestion from an
 unverified claim. Do not change facts or make unrequested substantive edits.

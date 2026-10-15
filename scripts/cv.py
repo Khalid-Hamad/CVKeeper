@@ -6,15 +6,20 @@ from dataclasses import dataclass
 from datetime import date
 from html import escape
 import json
+import os
 from pathlib import Path
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from urllib.parse import urlsplit
 
 
 ROOT = Path(__file__).resolve().parent.parent
 INLINE = re.compile(r"\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^\s()]+)\)")
 PLACEHOLDER = re.compile(r"\{\{[^{}]+\}\}")
+PDF_HEADER = b"%PDF-"
 
 
 @dataclass
@@ -151,7 +156,7 @@ def render_html(blocks, paper, language, direction, draft, filename):
 <style>%s</style>
 </head>
 <body>
-<div class="toolbar" dir="ltr"><span>CVKeeper · %s · Print at 100%%; turn off headers and footers.<br>Save as: <strong>%s.pdf</strong></span><button type="button" onclick="window.print()">Save as PDF</button></div>
+<div class="toolbar" dir="ltr"><span>CVKeeper · %s · HTML preview. On Windows use Ctrl+P, not Ctrl+S.<br>PDF name: <strong>%s.pdf</strong></span><button type="button" onclick="window.print()">Print / Save PDF</button></div>
 <main>%s%s</main>
 </body>
 </html>
@@ -216,10 +221,121 @@ def export_identity(blocks, output_path, first_name=None, last_name=None):
     number = previous_number + 1
     updated = date.today().isoformat()
     filename = "%s_%s_%s_%d" % (first, last, updated, number)
-    return {"filename": filename, "pdf_filename": filename + ".pdf", "updated": updated, "build_number": number}
+    return {"filename": filename, "pdf_filename": filename + ".pdf", "updated": updated, "build_number": number, "pdf_created": False}
 
 
-def build(input_path, output_path, paper="A4", language="en", direction="ltr", strict=False, first_name=None, last_name=None):
+def browser_candidates():
+    candidates = []
+    for command in ("msedge", "microsoft-edge", "google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
+        location = shutil.which(command)
+        if location:
+            candidates.append(Path(location))
+    if sys.platform == "darwin":
+        candidates.extend([
+            Path("/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"),
+            Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"),
+            Path("/Applications/Chromium.app/Contents/MacOS/Chromium"),
+        ])
+    if sys.platform == "win32":
+        for variable in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA"):
+            base = os.environ.get(variable)
+            if not base:
+                continue
+            candidates.extend([
+                Path(base) / "Microsoft/Edge/Application/msedge.exe",
+                Path(base) / "Google/Chrome/Application/chrome.exe",
+                Path(base) / "Chromium/Application/chrome.exe",
+            ])
+    result = []
+    seen = set()
+    for candidate in candidates:
+        normalized = str(candidate.resolve()) if candidate.exists() else str(candidate)
+        if normalized not in seen:
+            seen.add(normalized)
+            result.append(candidate)
+    return result
+
+
+def find_browser(explicit=None):
+    if explicit:
+        candidate = Path(explicit).expanduser()
+        if candidate.is_file():
+            return candidate.resolve()
+        raise ValueError("Browser executable not found: " + str(candidate))
+    for candidate in browser_candidates():
+        if candidate.is_file():
+            return candidate.resolve()
+    raise ValueError(
+        "PDF export needs Edge, Chrome, or Chromium in this execution environment. "
+        "Install one, pass --browser with its executable path, use your AI client's PDF tool, "
+        "or follow docs/EXPORTING.md."
+    )
+
+
+def verify_pdf(path):
+    if not path.is_file():
+        raise ValueError("PDF export did not create a file: " + str(path))
+    data = path.read_bytes()
+    if not data.startswith(PDF_HEADER) or b"%%EOF" not in data[-2048:]:
+        raise ValueError("The exported file is not a valid PDF: " + str(path))
+    return path
+
+
+def export_pdf(html_path, pdf_path, browser=None):
+    if not html_path.is_file():
+        raise ValueError("HTML source not found: " + str(html_path))
+    if pdf_path.is_symlink():
+        raise ValueError("Refusing to overwrite a symbolic link: " + str(pdf_path))
+    if pdf_path.exists():
+        return verify_pdf(pdf_path)
+    pdf_path.parent.mkdir(parents=True, exist_ok=True)
+    executable = find_browser(browser)
+    with tempfile.TemporaryDirectory(prefix=".cvkeeper-pdf-", dir=pdf_path.parent) as directory:
+        scratch = Path(directory)
+        temporary_pdf = scratch / pdf_path.name
+        profile = scratch / "browser-profile"
+        command = [
+            str(executable),
+            "--headless",
+            "--disable-gpu",
+            "--disable-extensions",
+            "--no-first-run",
+            "--no-pdf-header-footer",
+            "--user-data-dir=" + str(profile),
+            "--print-to-pdf=" + str(temporary_pdf),
+            html_path.resolve().as_uri(),
+        ]
+        try:
+            completed = subprocess.run(command, capture_output=True, text=True, timeout=90)
+        except subprocess.TimeoutExpired as error:
+            raise ValueError("Browser PDF export timed out after 90 seconds.") from error
+        if completed.returncode != 0:
+            details = (completed.stderr or completed.stdout).strip()
+            if len(details) > 500:
+                details = details[-500:]
+            if not details:
+                details = "exit status %d" % completed.returncode
+            raise ValueError("Browser PDF export failed: " + details)
+        verify_pdf(temporary_pdf)
+        temporary_pdf.replace(pdf_path)
+    return verify_pdf(pdf_path)
+
+
+def export_latest_pdf(output_path, browser=None):
+    metadata_path = output_path / "build.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if not isinstance(metadata, dict) or not isinstance(metadata.get("filename"), str):
+        raise ValueError("Invalid build.json: build the CV again before exporting PDF.")
+    html_path = output_path / (metadata["filename"] + ".html")
+    pdf_path = output_path / metadata.get("pdf_filename", metadata["filename"] + ".pdf")
+    export_pdf(html_path, pdf_path, browser)
+    metadata["pdf_filename"] = pdf_path.name
+    metadata["pdf_created"] = True
+    metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return pdf_path
+
+
+def build(input_path, output_path, paper="A4", language="en", direction="ltr", strict=False, first_name=None, last_name=None, make_pdf=False, browser=None):
     source = input_path.read_text(encoding="utf-8-sig")
     blocks = parse(source)
     messages = placeholder_messages(source)
@@ -248,25 +364,36 @@ def build(input_path, output_path, paper="A4", language="en", direction="ltr", s
     for name, content in outputs.items():
         with (output_path / name).open("x" if name in numbered else "w", encoding="utf-8") as handle:
             handle.write(content)
+    if make_pdf:
+        export_latest_pdf(output_path, browser)
     return messages
 
 
 def initialize(root):
     (root / "inbox").mkdir(exist_ok=True)
-    destination = root / "cv.md"
-    template = (root / "templates/cv.md").read_text(encoding="utf-8")
-    try:
-        with destination.open("x", encoding="utf-8") as handle:
-            handle.write(template)
-    except FileExistsError:
-        return False
-    return True
+    (root / "notes").mkdir(exist_ok=True)
+    created = []
+    sources = {
+        root / "cv.md": root / "templates/cv.md",
+        root / "notes/profile.md": root / "templates/profile.md",
+        root / "notes/field-guide.md": root / "templates/field-guide.md",
+        root / "notes/review.md": root / "templates/review.md",
+    }
+    for destination, template in sources.items():
+        content = template.read_text(encoding="utf-8")
+        try:
+            with destination.open("x", encoding="utf-8") as handle:
+                handle.write(content)
+            created.append(destination.relative_to(root).as_posix())
+        except FileExistsError:
+            pass
+    return created
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("init", help="Create cv.md without replacing an existing CV")
+    commands.add_parser("init", help="Create the master and private career-context files without replacing existing files")
     checker = commands.add_parser("check", help="Check structure, links, and unresolved placeholders")
     checker.add_argument("--input", type=Path, default=ROOT / "cv.md")
     builder = commands.add_parser("build", help="Export HTML, plain text, and LaTeX source")
@@ -278,11 +405,16 @@ def main(argv=None):
     builder.add_argument("--strict", action="store_true", help="Refuse unresolved placeholders")
     builder.add_argument("--first-name", help="First name for filenames; defaults to the first word of the CV name")
     builder.add_argument("--last-name", help="Family name for filenames; defaults to the last word of the CV name")
+    builder.add_argument("--pdf", action="store_true", help="Create a real PDF using installed Edge, Chrome, or Chromium")
+    builder.add_argument("--browser", help="Path to an Edge, Chrome, or Chromium executable")
+    pdf = commands.add_parser("pdf", help="Export the latest numbered HTML build to PDF without creating a new build")
+    pdf.add_argument("--output", type=Path, default=ROOT / "output")
+    pdf.add_argument("--browser", help="Path to an Edge, Chrome, or Chromium executable")
     arguments = parser.parse_args(argv)
     try:
         if arguments.command == "init":
             created = initialize(ROOT)
-            print("Created cv.md. Replace its placeholders with your confirmed information." if created else "cv.md already exists; left unchanged.")
+            print("Created: " + ", ".join(created) if created else "Master and career-context files already exist; left unchanged.")
         elif arguments.command == "check":
             source = arguments.input.read_text(encoding="utf-8-sig")
             parse(source)
@@ -290,18 +422,26 @@ def main(argv=None):
             if messages:
                 raise ValueError("\n".join(messages))
             print("Structure and links look good; no placeholders remain. Review facts yourself.")
-        else:
-            messages = build(arguments.input, arguments.output, arguments.paper, arguments.language, arguments.direction, arguments.strict, arguments.first_name, arguments.last_name)
+        elif arguments.command == "build":
+            messages = build(arguments.input, arguments.output, arguments.paper, arguments.language, arguments.direction, arguments.strict, arguments.first_name, arguments.last_name, arguments.pdf, arguments.browser)
             for message in messages:
                 print("Draft: " + message, file=sys.stderr)
             identity = json.loads((arguments.output / "build.json").read_text(encoding="utf-8"))
             print("Created " + str(arguments.output.resolve() / (identity["filename"] + ".html")))
             print("Also created matching .txt and .tex files. cv.html, cv.txt, and cv.tex are convenient copies of the latest build.")
-            print("Open the HTML, print, and save as " + identity["pdf_filename"])
+            if identity.get("pdf_created"):
+                print("Created PDF " + str(arguments.output.resolve() / identity["pdf_filename"]))
+            else:
+                print("PDF not created. Run with --pdf or use your AI client's PDF tool.")
+        else:
+            pdf_path = export_latest_pdf(arguments.output, arguments.browser)
+            print("Created PDF " + str(pdf_path.resolve()))
     except (OSError, UnicodeError, ValueError) as error:
         print("CVKeeper: " + str(error), file=sys.stderr)
         if isinstance(error, FileNotFoundError):
             print("For a new CV, run: python3 scripts/cv.py init", file=sys.stderr)
+        if getattr(arguments, "command", None) == "build" and getattr(arguments, "pdf", False):
+            print("The HTML build may still be available. Fix the PDF issue, then run: python3 scripts/cv.py pdf", file=sys.stderr)
         return 1
     return 0
 

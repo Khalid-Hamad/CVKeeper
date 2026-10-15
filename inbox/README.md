@@ -5,9 +5,10 @@ PDF, Word, or plain-text CVs can be used if your assistant can read them.
 
 Tell the assistant what you want:
 
-> Read AGENTS.md and the CV in inbox/. Help me improve it, make a specific
-> update, or keep it current. Ask which changes I want before rewriting it.
-> Preserve my facts and original file, and ask about anything unclear.
+> Read AGENTS.md and the CV in inbox/. Be my CV writer and updater. Build my
+> private career profile from it, then ask about important experience, results,
+> evidence, and timeline overlaps that are missing or unclear. Preserve my
+> facts and original file.
 
 You can also ask to import the CV with its wording unchanged. A full interview
 is not needed when the information is already in your document. For scanned

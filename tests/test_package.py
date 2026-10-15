@@ -28,6 +28,8 @@ class PackageTests(unittest.TestCase):
             with ZipFile(destination) as archive:
                 self.assertIn("CVKeeper/inbox/README.md", archive.namelist())
                 self.assertNotIn("CVKeeper/inbox/old-cv.pdf", archive.namelist())
+                self.assertIn("CVKeeper/guides/INTERVIEW.md", archive.namelist())
+                self.assertIn("CVKeeper/templates/profile.md", archive.namelist())
                 self.assertEqual(set(archive.namelist()), {"CVKeeper/" + path for path in package.PUBLIC_FILES})
                 self.assertTrue(all(b"PRIVATE_SENTINEL" not in archive.read(name) for name in archive.namelist()))
 

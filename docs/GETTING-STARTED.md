@@ -12,15 +12,18 @@ For a private working copy, avoid putting the folder in a public shared drive.
 
 ## Connect your AI assistant
 
-Open a local-folder project in the OpenAI/Codex app or the Claude Code desktop
-workflow and choose this extracted folder. Use the official setup links in
+In Claude Desktop, open Cowork and connect this extracted folder, or use its
+Code workflow when available. In Codex, open the folder as a local project.
+Use the official setup links in
 `README.md` if your app does not expose this option. When the app asks for
 folder permissions, grant access to the folder you chose. Availability depends
 on the app, operating system, and your account.
 
 Paste the starting prompt from `README.md` or `START-HERE.html`. The assistant
 should read `AGENTS.md`, check for an existing `cv.md` and source CVs in `inbox/`,
-and ask what you want to change. With an existing CV, you can improve it, update
+and act as your CV writer/updater. It should learn your target field and ask
+about real responsibilities, achievements, evidence, and timeline overlaps,
+then save those answers under `notes/`. With an existing CV, you can improve it, update
 only a few details, or keep its wording. If the app only replies with text, ask whether it has
 file-editing access; otherwise use the chat-only route below.
 
@@ -57,22 +60,27 @@ does not require an API key and does not call an AI API itself.
 
 ## Preview and save
 
-The assistant runs the builder, then gives you `output/cv.html`. Double-click
-it to open it in a browser. Choose **Save as PDF**, choose a PDF destination in
-the print dialog, set paper to A4 (the default), and turn off headers and
-footers. Save using the exact name shown above the CV, such as
+The assistant should give you an actual `.pdf` plus editable `cv.md`. It may use
+Claude Desktop's file creation or run `py -3 scripts/cv.py build --strict --pdf`
+on Windows. `output/cv.html` is a preview, not the finished PDF.
+
+If automatic PDF creation is unavailable, open `output/cv.html`, press **Ctrl+P**
+(not Ctrl+S), choose **Save as PDF** or **Microsoft Print to PDF**, set A4, and
+turn off headers and footers. Save using the exact name shown above the CV, such as
 `Ahmed_Yusef_2026-10-15_1.pdf`. The date is the local build date, and the final
 number increases on each build in that output folder. Confirm the filename in
 the save dialog. Review every page before sending. See `docs/EXPORTING.md` for details.
 
-Closing or printing the preview does not change `cv.md`. To revise anything,
+Closing or printing the preview does not change `cv.md`. Saving with Ctrl+S on
+Windows saves a webpage, not a PDF. To revise anything,
 ask the assistant to edit the source and rebuild, then refresh the preview.
 
 ## Come back later
 
 Open the same folder and say what changed. The assistant should read your
-existing CV, back it up in `history/`, make the update, and rebuild. Your
-preferences and change notes live in `notes/`. For a specific job, keep the
+existing CV and saved career profile, back up changed sources in `history/`,
+make the update, and rebuild. Your career facts, field guide, review, preferences,
+and change notes live in `notes/`. For a specific job, keep the
 description in `jobs/`; tailored copies live in `variants/` with their own
 output folders. Back up the whole personal folder privately, including these
 Git-ignored files.
@@ -86,7 +94,7 @@ not `cv.md.txt`, in the root of this folder. Do not include surrounding triple
 backticks. On macOS TextEdit, choose **Format → Make Plain Text** before saving.
 
 Open a terminal in this folder and run `python3 scripts/cv.py check` followed
-by `python3 scripts/cv.py build` (Windows: `py -3`). If terminal use is unfamiliar,
+by `python3 scripts/cv.py build --strict --pdf` (Windows: `py -3`). If terminal use is unfamiliar,
 the folder-capable app route is the easier option.
 
 ## Troubleshooting
@@ -96,6 +104,7 @@ the folder-capable app route is the easier option.
 | “No such file” for the script | Open the terminal in the extracted folder containing README.md, or ask the assistant to do it. |
 | Missing cv.md | Ask the assistant to initialize the CV, or run `python3 scripts/cv.py init`. |
 | DRAFT banner | Replace the remaining `{{PLACEHOLDERS}}` with confirmed details or remove optional content, then rebuild. |
+| Windows saved a webpage | Use Ctrl+P and select Save as PDF or Microsoft Print to PDF. Ctrl+S saves HTML. |
 | Old preview | Rebuild, then reload the HTML file. Changes to Markdown do not auto-refresh exports. |
 | Missing text in a PDF | Check print scale, paper size, font support, and page breaks; see the export guide. |
 | The agent cannot edit files | Choose a local-folder workflow or use the chat-only fallback. |

@@ -25,5 +25,18 @@ jobs:
         run: python scripts/cv.py check --input examples/cv.md
       - name: Rebuild fictional example
         run: python scripts/cv.py build --input examples/cv.md --output output/example --strict
+      - name: Export a real PDF on Windows
+        if: runner.os == 'Windows'
+        run: python scripts/cv.py pdf --output output/example
+      - name: Verify PDF signature on Windows
+        if: runner.os == 'Windows'
+        shell: python
+        run: |
+          from pathlib import Path
+          import json
+          output = Path("output/example")
+          metadata = json.loads((output / "build.json").read_text())
+          data = (output / metadata["pdf_filename"]).read_bytes()
+          assert data.startswith(b"%PDF-") and b"%%EOF" in data[-2048:]
       - name: Package starter only
         run: python scripts/package.py
