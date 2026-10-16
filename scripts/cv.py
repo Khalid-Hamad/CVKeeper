@@ -291,7 +291,7 @@ def export_pdf(html_path, pdf_path, browser=None):
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     executable = find_browser(browser)
     with tempfile.TemporaryDirectory(prefix=".cvkeeper-pdf-", dir=pdf_path.parent) as directory:
-        scratch = Path(directory)
+        scratch = Path(directory).resolve()
         temporary_pdf = scratch / pdf_path.name
         profile = scratch / "browser-profile"
         command = [
@@ -396,7 +396,7 @@ def main(argv=None):
     commands.add_parser("init", help="Create the master and private career-context files without replacing existing files")
     checker = commands.add_parser("check", help="Check structure, links, and unresolved placeholders")
     checker.add_argument("--input", type=Path, default=ROOT / "cv.md")
-    builder = commands.add_parser("build", help="Export HTML, plain text, and LaTeX source")
+    builder = commands.add_parser("build", help="Export CV files; add --pdf for a direct PDF without opening a browser window")
     builder.add_argument("--input", type=Path, default=ROOT / "cv.md")
     builder.add_argument("--output", type=Path, default=ROOT / "output")
     builder.add_argument("--paper", choices=["A4", "letter"], default="A4")
@@ -427,12 +427,12 @@ def main(argv=None):
             for message in messages:
                 print("Draft: " + message, file=sys.stderr)
             identity = json.loads((arguments.output / "build.json").read_text(encoding="utf-8"))
-            print("Created " + str(arguments.output.resolve() / (identity["filename"] + ".html")))
-            print("Also created matching .txt and .tex files. cv.html, cv.txt, and cv.tex are convenient copies of the latest build.")
             if identity.get("pdf_created"):
                 print("Created PDF " + str(arguments.output.resolve() / identity["pdf_filename"]))
             else:
                 print("PDF not created. Run with --pdf or use your AI client's PDF tool.")
+            print("Created " + str(arguments.output.resolve() / (identity["filename"] + ".html")))
+            print("Also created matching .txt and .tex files. cv.html, cv.txt, and cv.tex are convenient copies of the latest build.")
         else:
             pdf_path = export_latest_pdf(arguments.output, arguments.browser)
             print("Created PDF " + str(pdf_path.resolve()))

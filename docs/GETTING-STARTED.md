@@ -58,13 +58,15 @@ check `python --version` before using it.
 Your agent may need your app's permission to run local commands. CVKeeper
 does not require an API key and does not call an AI API itself.
 
-## Preview and save
+## Receive your PDF
 
 The assistant should give you an actual `.pdf` plus editable `cv.md`. It may use
 Claude Desktop's file creation or run `py -3 scripts/cv.py build --strict --pdf`
-on Windows. `output/cv.html` is a preview, not the finished PDF.
+on Windows. The PDF is saved directly without a browser window or print dialog.
+`output/cv.html` is an optional preview, not the finished PDF.
 
-If automatic PDF creation is unavailable, open `output/cv.html`, press **Ctrl+P**
+Only if automatic PDF creation is unavailable and you choose a manual fallback,
+open `output/cv.html`, press **Ctrl+P**
 (not Ctrl+S), choose **Save as PDF** or **Microsoft Print to PDF**, set A4, and
 turn off headers and footers. Save using the exact name shown above the CV, such as
 `Ahmed_Yusef_2026-10-15_1.pdf`. The date is the local build date, and the final

@@ -2,7 +2,7 @@
 
 Operations Coordinator
 
-Riyadh, Saudi Arabia | [ahmed@example.com](mailto:ahmed@example.com) | [Portfolio](https://example.com)
+Riyadh, Saudi Arabia | [ahmed@example.com](mailto:ahmed@example.com) | [example.com](https://example.com)
 
 ## Summary
 

@@ -44,9 +44,30 @@ share private reasons for a career gap or demand numbers they do not have.
 4. Open/render every PDF page when tools allow. Check clipping, blank pages,
    unreadable scripts, headings stranded at page bottoms, links, and text order.
    If you cannot inspect it, say which checks the person should perform.
-5. Link the PDF first and the editable source second. If export is blocked,
+5. Extract text from the actual PDF and compare it with the approved CV in
+   reading order. Confirm that name, visible contact details, headings, employers,
+   titles, dates, and bullets survive. Check accents and Arabic when used.
+   Verify all pages, not just the first. Record the extraction tool and result;
+   mark unverified if unavailable. Do not substitute the companion .txt file.
+6. Link the PDF first and the editable source second. If export is blocked,
    clearly say "PDF export is incomplete" and explain the available next step.
-   On Windows the manual fallback is Ctrl+P and a PDF printer, never Ctrl+S.
+   Do not ask the person to save a browser page. Manual printing is an optional
+   last resort only if automatic tools are unavailable, not successful export.
+
+## ATS-friendly checks
+
+Use a single text column, conventional section headings, and consistent dates.
+Keep contact details in the main content, not repeating page headers/footers.
+Avoid layout tables, text boxes, images, icons, and decorative letter spacing.
+Use visible email/phone/portfolio text and truthful job-relevant terminology.
+Respect the employer's requested file format and language. Never upload a
+personal CV to an external checker without permission. Do not promise an ATS
+score, universal parsing, or hiring success.
+
+These defaults address parsing risks documented by
+[Greenhouse](https://support.greenhouse.io/hc/en-us/articles/200989175-Unsuccessful-resume-parse)
+(reviewed 2026-10-16). Our extraction test is a readability check, not a test
+against every ATS. Arabic and other scripts need separate text-order review.
 
 Do not mark a draft final just because the user has answered name/contact
 questions, the HTML looks polished, or the build command returned success.

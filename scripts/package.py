@@ -15,7 +15,7 @@ PUBLIC_FILES = (
     "templates/cv.md", "templates/profile.md", "templates/field-guide.md", "templates/review.md", "templates/resume.css", "templates/resume.tex",
     "examples/cv.md", "examples/preview/cv.html", "examples/preview/cv.txt", "examples/preview/cv.tex",
     "prompts/create.md", "prompts/import.md", "prompts/update.md", "prompts/tailor.md", "prompts/review.md",
-    "scripts/cv.py", "scripts/package.py", "tests/test_cv.py", "tests/test_package.py",
+    "scripts/cv.py", "scripts/package.py", "tests/test_cv.py", "tests/test_package.py", "tests/test_pdf_integration.py",
 )
 
 

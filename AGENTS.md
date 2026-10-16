@@ -77,6 +77,8 @@ and tools quietly. Do not lead with a name/filename interview or a build command
 The default final deliverable is a real, downloadable/openable `.pdf` plus the
 editable master. HTML is an optional preview, not a finished PDF. Do not stop
 at a webpage, rename HTML to .pdf, or tell Windows users to use Ctrl+S.
+Save the PDF directly using tools; do not make browser printing a normal step.
+The bundled exporter runs headlessly and requires no browser window or Save dialog.
 
 1. Prefer the client app's available PDF/file-creation capability when it can
    generate and inspect an actual PDF. Use its relevant document tools/skills.
@@ -103,6 +105,26 @@ preferences. Native client tools must use the same convention, inspect previous
 output names to choose the next number, and never replace an earlier build.
 Re-exporting an already-built HTML uses `python3 scripts/cv.py pdf`; this does
 not create another build. See `docs/EXPORTING.md` for details.
+
+## ATS-friendly writing and export
+
+- Use a single-column, text-based layout with standard section names in the
+  CV's language. Keep name and contact details in the main document flow, not
+  repeating page headers/footers. No layout tables, text boxes, photos, icons,
+  skill bars, decorative letter spacing, or image-only pages.
+- Write contact addresses and important URLs visibly, not just as hidden link
+  targets. Keep role, employer, and dates together. Use job-specific terms only
+  when supported by the person's real experience; never stuff hidden keywords.
+- Apply the same rules to client-native PDFs as to the bundled template.
+  Follow the employer's required file format and language, even if not PDF.
+- Extract text from the actual PDF with available PDF tools and compare it
+  against the approved content in reading order. Check contacts, headings,
+  roles, dates, bullets, and Arabic/other non-Latin text where applicable.
+  A clean HTML preview or companion .txt file is not proof of PDF readability.
+- Record extraction and visual review separately in `notes/review.md`. If
+  extraction tools are unavailable, explicitly mark that check unverified.
+  Say ATS-friendly, never ATS-certified or guaranteed to pass; parsing and
+  employer selection differ. See `guides/REVIEW.md` for the final gate.
 
 ## Preserve facts and files
 

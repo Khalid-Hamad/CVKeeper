@@ -298,7 +298,7 @@ class BuildTests(unittest.TestCase):
 
     def test_windows_browser_discovery_includes_edge_and_chrome(self):
         with patch.object(cv.sys, "platform", "win32"), patch.object(cv.shutil, "which", return_value=None), patch.dict(cv.os.environ, {"PROGRAMFILES": r"C:\Program Files", "PROGRAMFILES(X86)": r"C:\Program Files (x86)", "LOCALAPPDATA": r"C:\Users\Ahmed\AppData\Local"}, clear=True):
-            candidates = {str(path) for path in cv.browser_candidates()}
+            candidates = {path.as_posix() for path in cv.browser_candidates()}
         self.assertTrue(any("Microsoft/Edge/Application/msedge.exe" in path for path in candidates))
         self.assertTrue(any("Google/Chrome/Application/chrome.exe" in path for path in candidates))
 
@@ -307,6 +307,14 @@ class BuildTests(unittest.TestCase):
         fake_pdf.write_text("<!doctype html><title>CV</title>", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "not a valid PDF"):
             cv.verify_pdf(fake_pdf)
+
+    def test_chat_only_instructions_include_guides_and_direct_pdf(self):
+        page = (ROOT / "START-HERE.html").read_text(encoding="utf-8")
+        fallback = page.split("My chat app cannot open local folders.", 1)[1].split("</details>", 1)[0]
+        self.assertIn("guides/", fallback)
+        self.assertIn("context templates", fallback)
+        self.assertIn("build --strict --pdf", fallback)
+        self.assertIn("downloadable PDF", fallback)
 
     def test_career_context_templates_cover_experience_and_timeline(self):
         profile = (ROOT / "templates/profile.md").read_text(encoding="utf-8")

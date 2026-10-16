@@ -29,5 +29,7 @@ Not assessed. Record specific questions; do not mark an unanswered issue resolve
 - Actual PDF file verified: No
 - Pages visually inspected: No
 - Selectable text / reading order checked: No
+- PDF extraction tool and comparison result: Not assessed
+- ATS-friendly layout / employer format checked: No
 - Editable master and career context saved: No
 - Remaining limitations / user review: Not assessed

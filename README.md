@@ -34,9 +34,8 @@ about responsibilities, achievements, evidence, dates, and unexplained overlaps.
 It saves that context in private `notes/` files so future updates do not restart
 from zero. The final deliverable should be an actual PDF plus editable `cv.md`.
 
-Save the PDF with the exact name shown in the preview, for example
-`Ahmed_Yusef_2026-10-15_1.pdf`: first name, family name, update date, and build
-number. The number increases with each build in that output folder.
+The assistant saves the PDF directly with its name, date, and build number.
+You do not need to open a browser page or use a print/save dialog.
 
 **Requirements:** a folder-capable LLM client and its usual account access.
 Python 3.9+ plus Edge, Chrome, or Chromium lets the bundled tool create a PDF
@@ -129,7 +128,7 @@ Arabic filename characters are supported. See [export details](docs/EXPORTING.md
 
 ```sh
 python3 scripts/cv.py build --input examples/cv.md --output output/example --strict
-python3 scripts/cv.py build --input variants/analyst.md --output output/analyst --paper letter --strict
+python3 scripts/cv.py build --input variants/analyst.md --output output/analyst --paper letter --strict --pdf
 python3 -m unittest discover -s tests -v
 python3 scripts/package.py
 ```
@@ -145,15 +144,19 @@ files are ignored by Git, but that does not encrypt them, protect files already
 tracked, or remove them from a ZIP you make manually. Use the starter packager
 when sharing the template. Nothing automatically uploads or releases your CV.
 
-The layout uses one column and selectable text. Check the exported PDF's text
-and reading order before applying; no template guarantees ATS compatibility.
+The ATS-friendly layout uses one column, clear headings, and real text, without
+layout tables or graphics. The assistant must check text extraction and reading
+order from the actual PDF, not only its preview. No template guarantees ATS
+compatibility or hiring success. See the [review gate](guides/REVIEW.md).
 HTML supports Unicode and an optional right-to-left layout. The default LaTeX
 export is designed for English/Latin text. See [limitations](docs/EXPORTING.md).
 
 ## For maintainers
 
 Use the [live-test checklist](docs/LIVE-TEST.md) before sharing the project.
-CI runs tests and builds the fictional example on Linux, macOS, and Windows;
+CI runs tests and builds the fictional example on Linux, macOS, and Windows.
+On Windows it also generates real PDFs and checks extracted text against the
+source, including a multi-page CV. The extraction dependency is CI-only;
 it does not publish CVs. Contributions should preserve the simple offline
 workflow and avoid adding dependencies for routine edits.
 

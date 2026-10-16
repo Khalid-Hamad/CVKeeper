@@ -59,6 +59,10 @@ python3 scripts/package.py
 
 - Test Windows commands with `py -3`, including paths containing spaces, and
   confirm Edge/Chrome discovery plus the `--browser` override.
+- Confirm automatic export saves a PDF without a browser window or print dialog.
+  Run the opt-in `tests/test_pdf_integration.py` suite with `CVKEEPER_PDF_TESTS=1`
+  and `pypdf` installed in the test environment. It generates short and multi-page
+  PDFs and compares extracted content in order; it does not certify an ATS.
 - Check a long CV, a long email/URL, accented characters, and an Arabic HTML draft.
 - Confirm the ZIP includes `AGENTS.md`, `CLAUDE.md`, all `guides/`, the private
   context templates, and `.gitignore`, and excludes

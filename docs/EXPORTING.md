@@ -34,7 +34,9 @@ py -3 scripts/cv.py build --strict --pdf
 
 The command detects Microsoft Edge, Google Chrome, or Chromium in the environment
 where it runs, opens the generated HTML headlessly, and prints a real PDF. It
-uses no Python packages. In remote/cloud AI sessions, the client may not see the
+uses no Python packages. The PDF is saved directly in `output/` with its final
+numbered filename. No browser window, print dialog, or manual Save is needed.
+In remote/cloud AI sessions, the client may not see the
 browser installed on the person's PC; the assistant should then use its native
 PDF tools or explain the manual option below.
 
@@ -54,7 +56,27 @@ py -3 scripts/cv.py pdf
 The exporter verifies the PDF signature and end marker. This catches a webpage
 renamed `.pdf`, but the assistant/person must still inspect layout and content.
 
+## ATS-friendly PDF checks
+
+The default template uses one column, ordinary headings, and real text. Apply
+the same layout rules when using a client's native PDF tools. Keep contacts in
+the main document flow and avoid images, layout tables, and text boxes.
+
+Before delivery, extract text from the actual PDF using the client's PDF tools,
+`pdftotext`, or `pypdf` if available. Compare all pages against the approved CV:
+name, contacts, sections, roles, dates, and bullets must remain readable and in
+order. Check Arabic and accented text explicitly. Inspect pages visually too.
+Record checks and any limitations in `notes/review.md`; a PDF signature alone
+does not prove ATS readability. Routine export requires no extra Python packages;
+CI installs `pypdf` only to test actual PDF extraction.
+
+Follow the employer's format requirements. No template guarantees acceptance
+by every ATS. See the sourced [review checklist](../guides/REVIEW.md).
+
 ## Windows manual fallback
+
+Only use this if automatic export is unavailable and you choose to print
+manually. It is not part of the normal workflow.
 
 1. Open `output/cv.html` in Edge or Chrome.
 2. Press **Ctrl+P** or click **Print / Save PDF** in the preview.
