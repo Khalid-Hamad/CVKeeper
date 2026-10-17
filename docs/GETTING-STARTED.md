@@ -7,7 +7,8 @@ files. The folder may be called `CVKeeper-main`; that is fine. Move it somewhere
 you can find again, such as Documents. Double-click `START-HERE.html` for a
 browser-friendly guide and fictional CV preview.
 
-You do not need to install Git, create a GitHub account, or publish a repository.
+You do not need Git or your own repository. Downloading from a private GitHub
+repository requires an account with access; a shared ZIP does not.
 For a private working copy, avoid putting the folder in a public shared drive.
 
 ## Connect your AI assistant
@@ -44,10 +45,13 @@ a few symbols for headings and bullets. You do not need to learn it to work
 through an assistant. The example in `examples/` is fictional and must not be
 treated as your background.
 
-## Python prerequisite
+## Check PDF tools with your assistant
 
-Ask the assistant: “Check that Python 3.9 or newer is available and build my CV.”
+Ask the assistant: “Check your available tools and export my CV directly as a PDF.”
+It can use its native PDF tools when available. Otherwise, the bundled exporter
+needs Python 3.9+ and Edge, Chrome, or Chromium where commands actually run.
 The builder uses only Python's standard library, so there is no package install.
+Python is not a prerequisite for the interview or for client-native PDF tools.
 
 If Python is missing, install a supported Python 3 release from
 [python.org](https://www.python.org/downloads/) using its official installer,
@@ -65,17 +69,13 @@ Claude Desktop's file creation or run `py -3 scripts/cv.py build --strict --pdf`
 on Windows. The PDF is saved directly without a browser window or print dialog.
 `output/cv.html` is an optional preview, not the finished PDF.
 
-Only if automatic PDF creation is unavailable and you choose a manual fallback,
-open `output/cv.html`, press **Ctrl+P**
-(not Ctrl+S), choose **Save as PDF** or **Microsoft Print to PDF**, set A4, and
-turn off headers and footers. Save using the exact name shown above the CV, such as
-`Ahmed_Yusef_2026-10-15_1.pdf`. The date is the local build date, and the final
-number increases on each build in that output folder. Confirm the filename in
-the save dialog. Review every page before sending. See `docs/EXPORTING.md` for details.
+Ask for the saved PDF location or download link. The assistant handles the filename
+and build number. Review every page before sending it. If export fails, it must
+say so; a webpage is not a completed PDF. Optional manual printing is covered in
+[the export guide](EXPORTING.md#windows-manual-fallback), not the normal workflow.
 
-Closing or printing the preview does not change `cv.md`. Saving with Ctrl+S on
-Windows saves a webpage, not a PDF. To revise anything,
-ask the assistant to edit the source and rebuild, then refresh the preview.
+To revise anything, ask the assistant to edit the source and export a new PDF.
+Changing the source does not update an already-created PDF automatically.
 
 ## Come back later
 
@@ -89,15 +89,23 @@ Git-ignored files.
 
 ## Chat-only fallback
 
-Attach `AGENTS.md`, `templates/cv.md`, and your old CV (if any) to the chat.
-Explain that the assistant cannot edit local files and ask it to return the
-complete CV as Markdown. Save the content in a plain-text editor as `cv.md`,
-not `cv.md.txt`, in the root of this folder. Do not include surrounding triple
-backticks. On macOS TextEdit, choose **Format → Make Plain Text** before saving.
+1. Attach `AGENTS.md`, all three files in `guides/`, `templates/cv.md`,
+   `templates/profile.md`, `templates/field-guide.md`, `templates/review.md`,
+   and your old CV if you have one.
+2. Paste the same short starting message. Explain that the assistant cannot edit
+   your local folder. It should still interview you and use the review checklist.
+3. Ask for a downloadable PDF, editable `cv.md`, and updated `profile.md`,
+   `field-guide.md`, and `review.md`. Download them and keep the context files
+   in `notes/`. Reattach those saved files in the next session instead of blank
+   templates so the assistant can continue where you left off.
 
-Open a terminal in this folder and run `python3 scripts/cv.py check` followed
-by `python3 scripts/cv.py build --strict --pdf` (Windows: `py -3`). If terminal use is unfamiliar,
-the folder-capable app route is the easier option.
+If the client cannot generate a PDF, it must explain that limitation. You can
+use the [bundled exporter](EXPORTING.md#bundled-automatic-pdf-export) with the
+downloaded `cv.md`, or switch to a file-capable session with PDF tools.
+If given Markdown as text instead of a download, save it as plain text named
+`cv.md`, not `cv.md.txt`, without surrounding triple backticks. On macOS TextEdit,
+choose **Format → Make Plain Text** before saving. A folder-capable app is the
+easier route if handling these files or terminal commands feels unfamiliar.
 
 ## Troubleshooting
 
@@ -106,8 +114,8 @@ the folder-capable app route is the easier option.
 | “No such file” for the script | Open the terminal in the extracted folder containing README.md, or ask the assistant to do it. |
 | Missing cv.md | Ask the assistant to initialize the CV, or run `python3 scripts/cv.py init`. |
 | DRAFT banner | Replace the remaining `{{PLACEHOLDERS}}` with confirmed details or remove optional content, then rebuild. |
-| Windows saved a webpage | Use Ctrl+P and select Save as PDF or Microsoft Print to PDF. Ctrl+S saves HTML. |
+| Windows saved a webpage | Ask the assistant to export a real PDF using its PDF tools or `build --strict --pdf`. Ctrl+S saves HTML. |
 | Old preview | Rebuild, then reload the HTML file. Changes to Markdown do not auto-refresh exports. |
-| Missing text in a PDF | Check print scale, paper size, font support, and page breaks; see the export guide. |
+| Missing or scrambled PDF text | Ask the assistant to compare extracted PDF text with the source and check fonts, reading order, and page breaks. |
 | The agent cannot edit files | Choose a local-folder workflow or use the chat-only fallback. |
 | Want a fresh start | Make a private backup first, then use a newly extracted copy of the starter. |

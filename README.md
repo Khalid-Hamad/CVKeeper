@@ -1,166 +1,160 @@
 # CVKeeper
 
-**Turn your LLM client into your personal CV writer and updater.**
+**Your AI assistant, now your CV writer and updater.**
 
-A folder that gives Claude Desktop, Codex, or another file-capable LLM client
-the interview process, private career memory, field-specific writing guidance,
-review checks, and export tools needed to maintain your CV over time.
+CVKeeper is a folder you use with Claude Desktop, Codex, or another AI app that
+can work with files. It helps the assistant interview you, improve your CV,
+remember your career details, and export a real PDF. It is not a separate AI app.
 
-**New here? Double-click [START-HERE.html](START-HERE.html) after extracting the
-ZIP.** It opens a local getting-started guide in your browser. No account,
-installation, or internet connection is needed to view the guide and example.
+You do not need to learn coding, Git, or Markdown. Your assistant handles the files.
 
-[See the fictional example](examples/preview/cv.html) ·
-[Setup guide](docs/GETTING-STARTED.md) · [Export a PDF](docs/EXPORTING.md)
+## Start here
 
-## Start in three steps
+1. **Download and extract.** On GitHub, select **Code → Download ZIP**, then
+   extract the whole folder. `CVKeeper-main` is a normal folder name. You can
+   also use a ZIP shared by the maintainer. Private GitHub repositories require
+   an account with access; using an already-downloaded ZIP does not.
+2. **Add your current CV, if you have one.** Put a copy in the included
+   `inbox/` folder. Starting from scratch? Skip this step.
+3. **Open the folder in your AI app.** Use a session that can read and edit
+   local files, such as Claude Desktop's Cowork or Code workflow when available,
+   or a local Codex project. Give it access to this folder.
+4. **Paste this message:**
 
-1. **Get the folder.** On this repository's GitHub page, choose **Code →
-   Download ZIP**, then extract it. Or clone this repository. Keep the whole
-   folder together; Git and a GitHub account are not needed for the ZIP route.
-2. **Open it in your LLM client.** Already have a CV? Put a copy in the included
-   `inbox/` folder to improve it, make a specific update, or maintain it over
-   time. Select the extracted `CVKeeper` folder as a
-   local project in a folder-capable OpenAI/Codex app or Claude Desktop. Give the
-   assistant access to this folder. A normal chat cannot edit local files
-   unless your app provides that capability; see the fallback below.
-3. **Paste this message:**
+   > Read AGENTS.md and be my CV writer and updater. Guide me through the next step.
 
-   > Read AGENTS.md and be my CV writer and updater. Guide me through the next
-   > step.
+Prefer a visual guide? Double-click [START-HERE.html](START-HERE.html) in the
+extracted folder. It opens offline and includes a fictional Ahmed Yusef example.
+Opening that page alone does not start an AI conversation.
 
-The assistant first learns your target field and actual experience, then asks
-about responsibilities, achievements, evidence, dates, and unexplained overlaps.
-It saves that context in private `notes/` files so future updates do not restart
-from zero. The final deliverable should be an actual PDF plus editable `cv.md`.
+## What happens next?
 
-The assistant saves the PDF directly with its name, date, and build number.
-You do not need to open a browser page or use a print/save dialog.
+- The assistant asks about your target field, role, and actual experience,
+  a few questions at a time. It reuses information already in your CV.
+- It follows up on responsibilities, achievements, missing details, and
+  overlapping employment dates. It must not invent qualifications or results.
+- It saves your career profile and field-specific writing guidance for future
+  updates, then drafts and reviews the CV with you.
+- It delivers a **real PDF** and an editable master named `cv.md`. The PDF name,
+  update date, and build number are handled automatically. You do not need to
+  open a browser page or use a print/save dialog during automatic export.
 
-**Requirements:** a folder-capable LLM client and its usual account access.
-Python 3.9+ plus Edge, Chrome, or Chromium lets the bundled tool create a PDF
-directly. Claude Desktop can also use its own PDF/file-creation capability when
-available. CVKeeper has no Python packages, API keys, server, or LaTeX requirement.
+The bundled exporter saves PDFs in `output/`. An app using its own PDF tools
+should link the saved file or provide a download. If it cannot produce a PDF,
+it must explain the limitation, not present an HTML webpage as a finished CV.
 
-## Keep it current
+## What do I need?
+
+An AI app with file access and the account or subscription it normally requires.
+For direct PDF creation, the assistant needs **either**:
+
+- The app's own PDF-creation tools, when available; **or**
+- Python 3.9+ and Edge, Chrome, or Chromium in the environment where it runs.
+  The bundled exporter uses the browser in the background, without a window.
+
+Ask the assistant to check what is available. Python is not needed just to
+interview you or view the guide. Routine CVKeeper export needs no extra Python
+packages, API key, server, or LaTeX installation. App features and access vary.
+
+**My app only accepts attachments:** follow the
+[chat-only instructions](docs/GETTING-STARTED.md#chat-only-fallback). You will
+need to download and reattach your updated career files between sessions.
+
+## Update your CV later
+
+Keep the same folder. Reopen it in your assistant, ask it to read `AGENTS.md`,
+and describe the change. It should reuse saved information, back up the previous
+version, ask only relevant questions, and deliver an updated PDF.
 
 | What you need | What to tell your assistant |
 | --- | --- |
-| Start from an old CV | “Read AGENTS.md. Import the CV I put in inbox/. Ask about anything unclear.” |
-| Add a new role | “Read AGENTS.md. Add my new role. Ask me for the details you need.” |
-| Improve wording | “Review my CV for clarity and repetition. Preserve my facts and show what changed.” |
-| Apply for a job | “Use the job description in jobs/. Create a tailored version and keep my master CV unchanged.” |
-| Check before sending | “Review my CV for missing evidence, date overlaps, and readability. Deliver the final PDF.” |
+| Improve an old CV | “Improve the CV in inbox/. Ask about missing or unclear details.” |
+| Keep the wording | “Import my CV without changing its wording. Flag concerns separately.” |
+| Add experience | “Add my new role. Ask me for the details you need.” |
+| Apply for a job | “Tailor a copy for this job description. Keep my master CV unchanged.” |
+| Review before applying | “Review the facts, timeline, wording, and PDF readability.” |
 
-The visible prompt stays short because the full writer/updater process lives in
-`AGENTS.md` and `guides/`. The assistant saves your career profile, personalized
-field practices, open questions, and review state as it works.
+More messages are in [prompts/](prompts/). Your assistant can create any needed
+job-description or tailored-copy folders; you do not need to set them up first.
 
-## Pick your tool
+## Is it ATS-friendly?
 
-- **OpenAI / Codex:** open the local folder in a project that can edit files.
-  Codex uses the root `AGENTS.md`. See the [official app guide](https://learn.chatgpt.com/docs/app)
-  and [agent instruction guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
-- **Claude Desktop:** use Cowork with this local folder, or the Code workflow
-  when available. Start a new session with the same folder and paste the short
-  prompt. `CLAUDE.md` imports the shared instructions for Claude Code. See the
-  [official Cowork guide](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork),
-  [Cowork projects guide](https://support.claude.com/en/articles/14116274-organize-your-tasks-with-projects-in-claude-cowork), and
-  [file-creation guide](https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude).
-- **Terminal users:** from this folder, start `codex` or `claude` after
-  installing and signing in to your preferred tool. Use the same prompt.
-- **Chat-only apps:** attach `AGENTS.md`, the three files in `guides/`, the
-  private context templates, and your existing CV. Ask for updated `cv.md`,
-  `profile.md`, `field-guide.md`, and `review.md` downloads. Reattach them next
-  time. A normal chat cannot maintain the local folder unless the app gives it
-  file access.
+ATS means **applicant tracking system**, the software employers use to manage
+applications. The default CV layout uses one column, clear headings, visible
+contact details, and real text rather than an image. The assistant is instructed
+to check text extraction and reading order from the actual PDF.
 
-App interfaces and access vary; the official guides above are the setup reference.
+No template guarantees that every ATS will parse it correctly or that you will
+be shortlisted. Follow the employer's requested format and review the final
+file. Arabic and other non-Latin text need their own rendering and text-order
+checks. See the sourced [review checklist](guides/REVIEW.md).
 
-## What's in the folder?
+## Where are my files?
 
-```text
-START-HERE.html       Open this first after downloading the ZIP
-AGENTS.md            Shared instructions for AI assistants
-CLAUDE.md            Loads AGENTS.md for Claude Code-compatible sessions
-templates/           Blank CV and export styles
-guides/              Career interview, field practices, and review gate
-examples/            Fictional example and ready-to-open exports
-inbox/               Included folder for your existing CV (contents stay private)
-prompts/             Create, import, update, tailor, and review prompts
-docs/                Setup, formatting, export, and live-test guides
-scripts/             Small, offline Python builder and ZIP packager
-tests/               Automated checks for the tools
-```
+| File or folder | Purpose |
+| --- | --- |
+| `inbox/` | Copies of your existing CV; originals stay unchanged |
+| `cv.md` | Editable master CV, created during setup |
+| `notes/` | Career profile, field guidance, preferences, and review notes |
+| `output/` | Generated PDFs and optional previews from the bundled tools |
+| `history/` | Backups made by the assistant before changes |
+| `variants/` | Tailored copies for particular roles |
 
-During use, the assistant creates `cv.md`, `notes/profile.md`,
-`notes/field-guide.md`, `notes/review.md`, `output/`, and other private working
-folders. Those are excluded from Git by default. Copy your whole
-personal folder to a private backup location periodically; ignored files are
-not backed up by a Git commit.
+**Keep a private backup of the whole working folder.** Personal files are ignored
+by Git and excluded by the starter ZIP packager, but that is not encryption or
+automatic backup. A manually zipped folder can still contain personal data.
+Your AI app processes information under its own data policies. CVKeeper does
+not automatically upload, publish, or send your CV.
 
-## Build it yourself
+## Guides and support
 
-Run these commands from the extracted folder. On Windows, replace `python3`
-with `py -3`.
+- [Getting started and troubleshooting](docs/GETTING-STARTED.md)
+- [Automatic PDF export and requirements](docs/EXPORTING.md)
+- [Supported CV text format](docs/FORMAT.md)
+- Official setup: [Codex app](https://learn.chatgpt.com/docs/app),
+  [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md),
+  [Claude Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork),
+  [Cowork projects](https://support.claude.com/en/articles/14116274-organize-your-tasks-with-projects-in-claude-cowork),
+  [Claude file creation](https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude).
+
+<details>
+<summary>Optional: terminal commands and maintainer checks</summary>
+
+Most people can leave these steps to their assistant. Run commands from the
+extracted folder. On Windows, replace `python3` with `py -3`.
 
 ```sh
 python3 scripts/cv.py init
-# Edit cv.md, then:
+# Fill in cv.md with confirmed information, then:
 python3 scripts/cv.py check
 python3 scripts/cv.py build --strict --pdf
 ```
 
-Each build saves named `.html`, `.txt`, and `.tex` files using
-`FirstName_LastName_YYYY-MM-DD_buildNumber`, and retains earlier builds.
-`output/cv.html`, `output/cv.txt`, and `output/cv.tex` are convenient copies of
-the latest build; `output/build.json` records its exact PDF filename.
-With `--pdf`, the builder uses installed Edge, Chrome, or Chromium to produce
-an actual PDF. Without it, HTML is only a preview. Run `python3 scripts/cv.py
-pdf` to export the latest HTML without creating another build number.
-Unfilled placeholders
-are flagged; use `build --strict` to require a complete draft.
-
-Names default to the first and last words of the CV heading. For compound
-names, use `--first-name "Ahmed" --last-name "Al Yusef"`; this makes
-`Ahmed_Al-Yusef_YYYY-MM-DD_number` without changing the name displayed on the CV.
-Arabic filename characters are supported. See [export details](docs/EXPORTING.md).
+`init` preserves existing files. `--strict` rejects unresolved placeholders; it
+does not verify career facts. `--pdf` creates the PDF directly. Without `--pdf`,
+the build creates only HTML, plain text, and optional LaTeX source. Retry a failed
+PDF export with `python3 scripts/cv.py pdf` without consuming another build number.
+See [export details](docs/EXPORTING.md) for names, compound names, and RTL settings.
 
 ```sh
-python3 scripts/cv.py build --input examples/cv.md --output output/example --strict
-python3 scripts/cv.py build --input variants/analyst.md --output output/analyst --paper letter --strict --pdf
 python3 -m unittest discover -s tests -v
+python3 scripts/cv.py check --input examples/cv.md
+python3 scripts/cv.py build --input examples/cv.md --output output/example --strict --pdf
 python3 scripts/package.py
 ```
 
-The last command creates `dist/CVKeeper.zip` from an explicit list of starter
-files, excluding your personal workspace. It works without Git.
+The packager creates `dist/CVKeeper.zip` from an explicit list of starter files,
+excluding personal workspace files. It works without Git. Inspect changes to
+public starter files before sharing them.
 
-## Privacy and scope
+CI runs checks on Linux, macOS, and Windows. Windows also generates real PDFs
+and checks extracted text against short and multi-page sources using a test-only
+`pypdf` dependency. These tests do not prove how an AI will interview a person
+or certify every ATS. Complete the [live-test checklist](docs/LIVE-TEST.md)
+before publishing. Nothing in CI publishes CVs.
 
-The builder runs locally and makes no network requests. Your AI app has its
-own data handling policies; share only what you intend it to process. Personal
-files are ignored by Git, but that does not encrypt them, protect files already
-tracked, or remove them from a ZIP you make manually. Use the starter packager
-when sharing the template. Nothing automatically uploads or releases your CV.
+</details>
 
-The ATS-friendly layout uses one column, clear headings, and real text, without
-layout tables or graphics. The assistant must check text extraction and reading
-order from the actual PDF, not only its preview. No template guarantees ATS
-compatibility or hiring success. See the [review gate](guides/REVIEW.md).
-HTML supports Unicode and an optional right-to-left layout. The default LaTeX
-export is designed for English/Latin text. See [limitations](docs/EXPORTING.md).
-
-## For maintainers
-
-Use the [live-test checklist](docs/LIVE-TEST.md) before sharing the project.
-CI runs tests and builds the fictional example on Linux, macOS, and Windows.
-On Windows it also generates real PDFs and checks extracted text against the
-source, including a multi-page CV. The extraction dependency is CI-only;
-it does not publish CVs. Contributions should preserve the simple offline
-workflow and avoid adding dependencies for routine edits.
-
-CVKeeper is a reusable successor to [MyResumeTemp](https://github.com/Khalid-Hamad/MyResumeTemp).
-It keeps the section-based CV workflow and optional LaTeX output while removing
-the need to edit LaTeX or publish a personal CV through GitHub releases.
+CVKeeper is a reusable successor to
+[MyResumeTemp](https://github.com/Khalid-Hamad/MyResumeTemp).
 See [NOTICE.md](NOTICE.md) for provenance. [MIT licensed](LICENSE).

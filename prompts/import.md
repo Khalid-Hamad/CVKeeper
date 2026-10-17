@@ -11,5 +11,6 @@ and claims, and ask about uncertain extraction or contradictions. If cv.md
 already exists, back it up and reconcile the sources instead of silently
 overwriting newer facts. Keep the original file in inbox/ unchanged. Do not
 repeat questions already answered in the document. Convert the confirmed content into the supported
-Markdown format, check it, build the preview, and summarize what still needs
-my review. Do not borrow any content from the fictional example.
+Markdown format, check it, export an actual PDF directly, and summarize what
+still needs my review. If the content is provisional or export is blocked, say
+so clearly. Do not borrow any content from the fictional example.
